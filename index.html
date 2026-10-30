@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberBuddy — Your Friendly Cybersecurity Awareness Assistant</title>
+  <meta name="description" content="CyberBuddy is an interactive, privacy-first cybersecurity awareness chatbot. Get practical guidance on phishing, passwords, scams, malware, and account recovery.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+  <!-- App Container -->
+  <div class="app-layout" id="appLayout">
+    
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="CyberBuddy Sidebar">
+      <!-- Sidebar Header / Branding -->
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-avatar">
+            <img src="assets/favicon.svg" alt="CyberBuddy Logo" class="brand-logo-img">
+            <span class="status-pulse-dot" title="Online"></span>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-title">CyberBuddy</h1>
+            <p class="brand-tagline">Your friendly guide to staying safe online.</p>
+          </div>
+        </div>
+        <button type="button" class="icon-btn mobile-close-btn" id="closeSidebarBtn" aria-label="Close sidebar">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <!-- Assistant Status Badge -->
+      <div class="status-badge-card">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span class="status-text">Online &bull; Rule-based assistant</span>
+        </div>
+        <span class="client-badge">100% Client-Side</span>
+      </div>
+
+      <!-- Emergency Quick Action Button -->
+      <div class="sidebar-emergency-box">
+        <button type="button" class="btn btn-emergency w-full" id="sidebarEmergencyBtn">
+          <i data-lucide="shield-alert"></i>
+          <span>Emergency Help</span>
+          <span class="badge-pill">Urgent</span>
+        </button>
+      </div>
+
+      <!-- Quick Topic Explorer -->
+      <div class="sidebar-section">
+        <div class="section-heading">
+          <span class="section-title">Topic Explorer</span>
+          <span class="section-sub">8 Modules</span>
+        </div>
+        <nav class="topic-nav" aria-label="Cybersecurity Topics">
+          <button type="button" class="topic-btn" data-topic="phishing">
+            <i data-lucide="mail-warning"></i>
+            <span>Phishing & Scams</span>
+          </button>
+          <button type="button" class="topic-btn" data-topic="passwords">
+            <i data-lucide="key-round"></i>
+            <span>Passwords & 2FA</span>
+          </button>
+          <button type="button" class="topic-btn" data-topic="malware">
+            <i data-lucide="bug"></i>
+            <span>Malware & Downloads</span>
+          </button>
+          <button type="button" class="topic-btn" data-topic="wifi">
+            <i data-lucide="wifi"></i>
+            <span>Public Wi-Fi & VPN</span>
+          </button>
+          <button type="button" class="topic-btn" data-topic="social-engineering">
+            <i data-lucide="user-x"></i>
+            <span>Social Engineering</span>
+          </button>
+          <button type="button" class="topic-btn" data-topic="account-security">
+            <i data-lucide="shield-check"></i>
+            <span>Account Security</span>
+          </button>
+          <button type="button" class="topic-btn" data-topic="safe-browsing">
+            <i data-lucide="globe-lock"></i>
+            <span>Safe Browsing</span>
+          </button>
+          <button type="button" class="topic-btn" data-topic="privacy">
+            <i data-lucide="eye-off"></i>
+            <span>Digital Privacy</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Daily Safety Tip Card -->
+      <div class="sidebar-card tip-card">
+        <div class="tip-card-header">
+          <span class="tip-label">
+            <i data-lucide="lightbulb"></i>
+            <span>Cyber Safety Tip</span>
+          </span>
+          <button type="button" class="tip-refresh-btn" id="nextTipBtn" title="Show another tip" aria-label="Next Tip">
+            <i data-lucide="rotate-cw"></i>
+          </button>
+        </div>
+        <p class="tip-content" id="dailyTipText">Never share one-time passwords (OTPs) with anyone. Legitimate banks and support teams will never ask for your verification codes.</p>
+      </div>
+
+      <!-- Mini Cyber Quiz CTA -->
+      <div class="sidebar-card quiz-card">
+        <div class="quiz-card-header">
+          <i data-lucide="sparkles" class="accent-icon"></i>
+          <div>
+            <h2 class="card-title">Test Your Defense</h2>
+            <p class="card-desc">5-question quick awareness challenge.</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm w-full" id="openQuizBtn">
+          <i data-lucide="award"></i>
+          <span>Start Cyber Quiz</span>
+        </button>
+      </div>
+
+      <!-- Official Resources Link -->
+      <div class="sidebar-action-links">
+        <button type="button" class="text-link-btn" id="sidebarResourcesBtn">
+          <i data-lucide="external-link"></i>
+          <span>Official Helplines & Portals</span>
+        </button>
+      </div>
+
+      <!-- Privacy Notice in Sidebar Footer -->
+      <div class="sidebar-footer">
+        <div class="privacy-notice">
+          <i data-lucide="lock" class="privacy-icon"></i>
+          <p>
+            <strong>Privacy Guarantee:</strong> No chat data is saved or sent to any server. All processing runs locally in your browser.
+          </p>
+        </div>
+        <div class="task-badge">
+          <span>Cyber Security Awareness</span>
+          <span class="hashtag">Online Safety Guide</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Conversation View -->
+    <main class="chat-main" id="chatMain">
+      
+      <!-- Chat Header -->
+      <header class="chat-header">
+        <div class="chat-header-left">
+          <button type="button" class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="Open sidebar menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="assistant-status-box">
+            <div class="assistant-avatar-small">
+              <img src="assets/favicon.svg" alt="CyberBuddy">
+              <span class="status-pulse-dot small"></span>
+            </div>
+            <div>
+              <div class="header-name-row">
+                <span class="assistant-name">CyberBuddy</span>
+                <span class="rule-tag">Rule-based v1.0</span>
+              </div>
+              <span class="assistant-subtext">Online &bull; Privacy-First Educational Assistant</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-header-actions">
+          <button type="button" class="btn btn-emergency-outline btn-sm header-action-btn" id="headerEmergencyBtn" title="Emergency Help Checklist">
+            <i data-lucide="shield-alert"></i>
+            <span class="btn-text">Emergency</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm header-action-btn" id="headerQuizBtn" title="Launch Mini Cyber Quiz">
+            <i data-lucide="award"></i>
+            <span class="btn-text">Quiz</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm header-action-btn" id="headerResourcesBtn" title="Official Security Resources">
+            <i data-lucide="landmark"></i>
+            <span class="btn-text">Helplines</span>
+          </button>
+          <button type="button" class="icon-btn" id="clearChatBtn" title="Clear conversation history" aria-label="Clear Chat">
+            <i data-lucide="trash-2"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Chat Messages Area -->
+      <section class="chat-messages-container" id="chatMessagesContainer" role="log" aria-live="polite" aria-relevant="additions text">
+        
+        <!-- Welcome Hero Card (Inside Chat) -->
+        <div class="welcome-hero" id="welcomeHero">
+          <div class="welcome-icon-wrap">
+            <img src="assets/favicon.svg" alt="CyberBuddy Shield" class="welcome-hero-img">
+          </div>
+          <h2 class="welcome-title">Hey! I'm CyberBuddy.</h2>
+          <p class="welcome-subtitle">
+            I'm here to help you understand cybersecurity and stay safer online. Ask me anything about suspicious messages, account security, unsafe downloads, or online privacy.
+          </p>
+
+          <!-- Privacy Safeguard Banner -->
+          <div class="privacy-banner">
+            <i data-lucide="shield-check"></i>
+            <div>
+              <strong>Privacy Protection:</strong> Never share real passwords, OTPs, PINs, or financial secrets. All responses are generated purely on your device.
+            </div>
+          </div>
+
+          <!-- Suggested Questions Section -->
+          <div class="suggested-prompts-wrapper">
+            <span class="suggested-label">Try asking CyberBuddy:</span>
+            <div class="suggested-chips-grid">
+              <button type="button" class="prompt-chip" data-query="How do I identify a phishing email?">
+                <i data-lucide="mail"></i>
+                <span>How do I identify a phishing email?</span>
+              </button>
+              <button type="button" class="prompt-chip emergency-chip" data-query="Someone asked for my OTP. What should I do?">
+                <i data-lucide="alert-triangle"></i>
+                <span>Someone asked for my OTP. What should I do?</span>
+              </button>
+              <button type="button" class="prompt-chip" data-query="How can I secure my account?">
+                <i data-lucide="shield"></i>
+                <span>How can I secure my account?</span>
+              </button>
+              <button type="button" class="prompt-chip" data-query="Is public Wi-Fi safe?">
+                <i data-lucide="wifi"></i>
+                <span>Is public Wi-Fi safe?</span>
+              </button>
+              <button type="button" class="prompt-chip emergency-chip" data-query="I clicked a suspicious link. Help!">
+                <i data-lucide="link"></i>
+                <span>I clicked a suspicious link. Help!</span>
+              </button>
+              <button type="button" class="prompt-chip" data-query="How do I create a strong password?">
+                <i data-lucide="key"></i>
+                <span>How do I create a strong password?</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Stream (User and Bot Bubbles dynamically injected here) -->
+        <div class="messages-list" id="messagesList"></div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator" aria-hidden="true" style="display: none;">
+          <div class="assistant-avatar-tiny">
+            <img src="assets/favicon.svg" alt="CyberBuddy">
+          </div>
+          <div class="typing-bubble">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <span class="typing-status-text">CyberBuddy is thinking...</span>
+        </div>
+
+      </section>
+
+      <!-- Bottom Chat Input Area -->
+      <footer class="chat-input-area">
+        <!-- Quick Action Suggestion Chips Bar -->
+        <div class="quick-chips-bar" id="quickChipsBar">
+          <button type="button" class="quick-chip" data-query="Suspected Scam">🚨 Suspected Scam</button>
+          <button type="button" class="quick-chip" data-query="My account was hacked">🛡️ Hacked Account</button>
+          <button type="button" class="quick-chip" data-query="I downloaded an unknown file">⚠️ Suspicious File</button>
+          <button type="button" class="quick-chip" data-query="What is two-factor authentication?">🔑 2FA Guide</button>
+          <button type="button" class="quick-chip" data-query="What is social engineering?">🎭 Social Engineering</button>
+          <button type="button" class="quick-chip" data-query="Start cyber quiz">🎯 Start Quiz</button>
+        </div>
+
+        <form class="chat-input-form" id="chatForm">
+          <div class="input-wrapper">
+            <textarea 
+              id="chatInput" 
+              class="chat-input" 
+              placeholder="Ask CyberBuddy a cybersecurity question... (e.g. 'How to spot fake SMS?')"
+              rows="1"
+              maxlength="1000"
+              aria-label="Ask CyberBuddy a question"
+            ></textarea>
+            
+            <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message" disabled>
+              <i data-lucide="send"></i>
+            </button>
+          </div>
+          <div class="input-disclaimer">
+            <span>CyberBuddy is an educational assistant &bull; Never share passwords, OTPs, or cards &bull; Not a substitute for official incident response</span>
+          </div>
+        </form>
+      </footer>
+
+    </main>
+
+  </div>
+
+  <!-- MODAL: Emergency Help Desk -->
+  <div class="modal-backdrop" id="emergencyModal" aria-hidden="true">
+    <div class="modal-dialog emergency-dialog" role="dialog" aria-modal="true" aria-labelledby="emergencyModalTitle">
+      <div class="modal-header emergency-header">
+        <div class="modal-title-wrap">
+          <i data-lucide="shield-alert" class="emergency-icon-lg"></i>
+          <div>
+            <h3 class="modal-title" id="emergencyModalTitle">Emergency Cybersecurity Guidance</h3>
+            <p class="modal-subtitle">Immediate actionable steps for high-risk situations.</p>
+          </div>
+        </div>
+        <button type="button" class="icon-btn close-modal-btn" data-close="emergencyModal" aria-label="Close emergency modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="emergency-tabs">
+          <button type="button" class="tab-btn active" data-tab="tab-scam">🚨 Suspected Scam / OTP</button>
+          <button type="button" class="tab-btn" data-tab="tab-hacked">🔓 Compromised Account</button>
+          <button type="button" class="tab-btn" data-tab="tab-link">🔗 Suspicious Link / File</button>
+          <button type="button" class="tab-btn" data-tab="tab-fraud">💳 Money Transferred</button>
+        </div>
+
+        <div class="tab-panels">
+          <!-- Tab 1: Scam / OTP -->
+          <div class="tab-panel active" id="tab-scam">
+            <div class="alert-box alert-danger">
+              <i data-lucide="alert-octagon"></i>
+              <div>
+                <strong>Rule #1: STOP immediately!</strong> Never share OTPs, PINs, passwords, or CVVs. Legitimate banks and officials will NEVER ask for your verification code.
+              </div>
+            </div>
+            <ul class="checklist">
+              <li><strong>Do NOT send money or click links</strong> sent by the caller or messenger.</li>
+              <li><strong>Hang up immediately</strong> if someone claims to be calling from your bank, courier, or police demanding urgent payment.</li>
+              <li><strong>Verify independently:</strong> Call the company using the verified phone number printed on the back of your card or official website.</li>
+              <li><strong>Block and report:</strong> Mark the number or sender as spam on WhatsApp/SMS.</li>
+            </ul>
+            <button type="button" class="btn btn-primary btn-sm send-to-chat-btn" data-prompt="Someone asked for my OTP. What should I do?">
+              Ask CyberBuddy More About OTP Scams
+            </button>
+          </div>
+
+          <!-- Tab 2: Hacked Account -->
+          <div class="tab-panel" id="tab-hacked">
+            <div class="alert-box alert-warning">
+              <i data-lucide="shield"></i>
+              <div>
+                <strong>Take rapid action before recovery details are changed:</strong>
+              </div>
+            </div>
+            <ol class="ordered-checklist">
+              <li><strong>Use a clean, trusted device:</strong> Ensure your phone/PC isn't infected with malware.</li>
+              <li><strong>Change password immediately:</strong> If you can still log in, change it to a strong, unique 14+ character password.</li>
+              <li><strong>Change reused passwords:</strong> If you used that same password on email or other sites, update those instantly.</li>
+              <li><strong>Enable 2FA (Two-Factor Authentication):</strong> Prefer an Authenticator app (Google Authenticator, Aegis, Bitwarden).</li>
+              <li><strong>Log out all active sessions:</strong> Check Account Settings &rarr; Security &rarr; Active Sessions / Devices and sign out everything.</li>
+              <li><strong>Review recovery settings:</strong> Ensure your recovery phone number and backup email haven't been altered by the attacker.</li>
+            </ol>
+            <button type="button" class="btn btn-primary btn-sm send-to-chat-btn" data-prompt="My account was hacked. What should I do?">
+              Get Full Recovery Checklist in Chat
+            </button>
+          </div>
+
+          <!-- Tab 3: Suspicious Link / File -->
+          <div class="tab-panel" id="tab-link">
+            <div class="scenario-grid">
+              <div class="scenario-card">
+                <h4>1. Only Received the Link</h4>
+                <p>Do NOT click it. Inspect the domain carefully. Block the sender and delete the message.</p>
+              </div>
+              <div class="scenario-card">
+                <h4>2. Clicked, But Entered Nothing</h4>
+                <p>Close the browser tab immediately. Check your Downloads folder to ensure no automatic download occurred. Clear cache.</p>
+              </div>
+              <div class="scenario-card">
+                <h4>3. Entered Password / Credentials</h4>
+                <p>Go to the real website on a trusted device and change your password right away. Turn on 2FA and terminate existing sessions.</p>
+              </div>
+              <div class="scenario-card">
+                <h4>4. Opened / Executed a File</h4>
+                <p>Disconnect from Wi-Fi / Ethernet immediately to prevent malware from contacting command servers or spreading. Run a full antivirus scan.</p>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm send-to-chat-btn" data-prompt="I clicked a suspicious link. Help!">
+              Diagnose My Link Scenario in Chat
+            </button>
+          </div>
+
+          <!-- Tab 4: Financial Fraud -->
+          <div class="tab-panel" id="tab-fraud">
+            <div class="alert-box alert-danger">
+              <i data-lucide="phone-call"></i>
+              <div>
+                <strong>Golden Hour Response (Within 2 Hours):</strong> Swift action maximizes chances of banks freezing transferred funds.
+              </div>
+            </div>
+            <ul class="checklist">
+              <li><strong>Call Your Bank Instantly:</strong> Dial the emergency fraud hotline on the back of your debit/credit card to freeze accounts or cards.</li>
+              <li><strong>In India &mdash; National Cyber Fraud Helpline:</strong> Dial <span class="highlight-code">1930</span> immediately to report financial fraud.</li>
+              <li><strong>Official Reporting Portal:</strong> Register a formal complaint at <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer" class="link-external">cybercrime.gov.in</a>.</li>
+              <li><strong>Preserve Evidence:</strong> Take screenshots of transaction IDs, phone numbers, WhatsApp chats, and bank SMS messages. Do not delete them.</li>
+            </ul>
+            <button type="button" class="btn btn-primary btn-sm send-to-chat-btn" data-prompt="I transferred money to a scammer. What should I do?">
+              Follow Financial Fraud Steps in Chat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Mini Cyber Quiz -->
+  <div class="modal-backdrop" id="quizModal" aria-hidden="true">
+    <div class="modal-dialog quiz-dialog" role="dialog" aria-modal="true" aria-labelledby="quizModalTitle">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i data-lucide="award" class="accent-icon"></i>
+          <div>
+            <h3 class="modal-title" id="quizModalTitle">Cyber Defense Awareness Quiz</h3>
+            <p class="modal-subtitle">5 quick scenarios to test your real-world security instincts.</p>
+          </div>
+        </div>
+        <button type="button" class="icon-btn close-modal-btn" data-close="quizModal" aria-label="Close quiz">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body quiz-modal-body">
+        
+        <!-- Quiz Progress Bar -->
+        <div class="quiz-progress-wrap" id="quizProgressWrap">
+          <div class="quiz-progress-info">
+            <span id="quizStepText">Question 1 of 5</span>
+            <span id="quizScoreText">Score: 0</span>
+          </div>
+          <div class="quiz-progress-track">
+            <div class="quiz-progress-fill" id="quizProgressBar" style="width: 20%;"></div>
+          </div>
+        </div>
+
+        <!-- Question Container -->
+        <div class="quiz-content" id="quizContent">
+          <div class="quiz-question-box">
+            <span class="quiz-category-tag" id="quizCategory">Phishing</span>
+            <h4 class="quiz-question" id="quizQuestion">Loading question...</h4>
+          </div>
+
+          <div class="quiz-options-list" id="quizOptionsList">
+            <!-- Dynamically populated buttons -->
+          </div>
+
+          <!-- Explanation Box -->
+          <div class="quiz-explanation" id="quizExplanation" style="display: none;">
+            <div class="explanation-icon" id="explanationIcon"></div>
+            <div class="explanation-body">
+              <strong id="explanationTitle">Explanation</strong>
+              <p id="explanationText"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz Footer Actions -->
+        <div class="quiz-footer" id="quizFooter">
+          <button type="button" class="btn btn-primary" id="quizNextBtn" style="display: none;">
+            <span>Next Question</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- Quiz Completed State (Hidden initially) -->
+        <div class="quiz-results" id="quizResults" style="display: none;">
+          <div class="results-badge" id="resultsBadge">
+            <i data-lucide="trophy"></i>
+          </div>
+          <h3 class="results-title" id="resultsTitle">Challenge Completed!</h3>
+          <p class="results-score-line" id="resultsScoreLine">You scored 5 out of 5</p>
+          <p class="results-summary" id="resultsSummary">Outstanding! You have strong security awareness reflexes.</p>
+          
+          <div class="results-actions">
+            <button type="button" class="btn btn-secondary" id="restartQuizBtn">
+              <i data-lucide="rotate-ccw"></i>
+              <span>Restart Quiz</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="quizDiscussBtn">
+              <i data-lucide="message-square"></i>
+              <span>Discuss with CyberBuddy</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Trusted Resources & Helplines -->
+  <div class="modal-backdrop" id="resourcesModal" aria-hidden="true">
+    <div class="modal-dialog resources-dialog" role="dialog" aria-modal="true" aria-labelledby="resourcesModalTitle">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <i data-lucide="landmark" class="accent-icon"></i>
+          <div>
+            <h3 class="modal-title" id="resourcesModalTitle">Official Cybersecurity Resources</h3>
+            <p class="modal-subtitle">Verified national and international authorities for reporting and education.</p>
+          </div>
+        </div>
+        <button type="button" class="icon-btn close-modal-btn" data-close="resourcesModal" aria-label="Close resources modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body resources-body">
+        
+        <div class="resources-group">
+          <div class="group-header">
+            <span class="region-badge">India</span>
+            <h4>National Helplines & Reporting Channels</h4>
+          </div>
+
+          <div class="resource-cards-grid">
+            <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer" class="resource-card">
+              <div class="resource-card-icon">
+                <i data-lucide="shield"></i>
+              </div>
+              <div class="resource-card-info">
+                <div class="resource-card-name">
+                  <span>National Cyber Crime Reporting Portal</span>
+                  <i data-lucide="external-link" class="mini-ext"></i>
+                </div>
+                <p class="resource-card-desc">Official Ministry of Home Affairs portal for reporting cyber fraud, identity theft, and harassment.</p>
+                <span class="resource-tag">cybercrime.gov.in</span>
+              </div>
+            </a>
+
+            <div class="resource-card helpline-card">
+              <div class="resource-card-icon fraud-icon">
+                <i data-lucide="phone"></i>
+              </div>
+              <div class="resource-card-info">
+                <div class="resource-card-name">
+                  <span>National Cyber Financial Fraud Helpline</span>
+                  <span class="phone-chip">Dial 1930</span>
+                </div>
+                <p class="resource-card-desc">Immediate citizen helpline for financial cyber fraud. Call within golden hours to freeze unauthorized transactions.</p>
+                <span class="resource-tag">Toll-free 24x7</span>
+              </div>
+            </div>
+
+            <a href="https://www.cert-in.org.in" target="_blank" rel="noopener noreferrer" class="resource-card">
+              <div class="resource-card-icon">
+                <i data-lucide="cpu"></i>
+              </div>
+              <div class="resource-card-info">
+                <div class="resource-card-name">
+                  <span>CERT-In (Indian Computer Emergency Response Team)</span>
+                  <i data-lucide="external-link" class="mini-ext"></i>
+                </div>
+                <p class="resource-card-desc">National nodal agency for responding to cybersecurity incidents, vulnerability advisories, and security alerts.</p>
+                <span class="resource-tag">cert-in.org.in</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="resources-group">
+          <div class="group-header">
+            <span class="region-badge global">Global</span>
+            <h4>International Tools & Official Security Portals</h4>
+          </div>
+
+          <div class="resource-cards-grid">
+            <a href="https://www.cisa.gov/secure-our-world" target="_blank" rel="noopener noreferrer" class="resource-card">
+              <div class="resource-card-icon">
+                <i data-lucide="globe"></i>
+              </div>
+              <div class="resource-card-info">
+                <div class="resource-card-name">
+                  <span>CISA &mdash; Secure Our World</span>
+                  <i data-lucide="external-link" class="mini-ext"></i>
+                </div>
+                <p class="resource-card-desc">US Cybersecurity & Infrastructure Security Agency's global public awareness campaign covering 4 core defenses.</p>
+                <span class="resource-tag">cisa.gov</span>
+              </div>
+            </a>
+
+            <a href="https://haveibeenpwned.com" target="_blank" rel="noopener noreferrer" class="resource-card">
+              <div class="resource-card-icon">
+                <i data-lucide="search"></i>
+              </div>
+              <div class="resource-card-info">
+                <div class="resource-card-name">
+                  <span>Have I Been Pwned</span>
+                  <i data-lucide="external-link" class="mini-ext"></i>
+                </div>
+                <p class="resource-card-desc">Check if your email address or phone number has been exposed in public commercial data breaches.</p>
+                <span class="resource-tag">haveibeenpwned.com</span>
+              </div>
+            </a>
+
+            <a href="https://myaccount.google.com/security" target="_blank" rel="noopener noreferrer" class="resource-card">
+              <div class="resource-card-icon">
+                <i data-lucide="lock"></i>
+              </div>
+              <div class="resource-card-info">
+                <div class="resource-card-name">
+                  <span>Google Account Security Checkup</span>
+                  <i data-lucide="external-link" class="mini-ext"></i>
+                </div>
+                <p class="resource-card-desc">Review connected devices, 2FA settings, third-party apps, and recent security events on your Google account.</p>
+                <span class="resource-tag">myaccount.google.com/security</span>
+              </div>
+            </a>
+
+            <a href="https://support.microsoft.com/security" target="_blank" rel="noopener noreferrer" class="resource-card">
+              <div class="resource-card-icon">
+                <i data-lucide="shield-check"></i>
+              </div>
+              <div class="resource-card-info">
+                <div class="resource-card-name">
+                  <span>Microsoft Security & Safety Center</span>
+                  <i data-lucide="external-link" class="mini-ext"></i>
+                </div>
+                <p class="resource-card-desc">Official Microsoft guidance on Windows Defender, password resets, account protection, and scam reporting.</p>
+                <span class="resource-tag">support.microsoft.com/security</span>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="modal-notice-banner">
+          <i data-lucide="info"></i>
+          <span><strong>Notice:</strong> CyberBuddy is an educational assistant and does not directly file reports or contact authorities on your behalf. Always use the official portals above.</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
