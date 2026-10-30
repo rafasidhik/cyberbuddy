@@ -2,9 +2,6 @@
 > **"Your friendly guide to staying safe online."**  
 > An interactive, privacy-first, client-side cybersecurity awareness assistant.
 
-**Repository:** [https://github.com/rafasidhik/cyberbuddy](https://github.com/rafasidhik/cyberbuddy)  
-**Live Demo:** [https://rafasidhik.github.io/cyberbuddy/](https://rafasidhik.github.io/cyberbuddy/)
-
 ---
 
 ## 📌 Project Overview
